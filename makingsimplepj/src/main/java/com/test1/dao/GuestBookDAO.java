@@ -38,7 +38,7 @@ public class GuestBookDAO {
     public List<GuestBookDTO> getList() {
         List<GuestBookDTO> list = new ArrayList<>();
         String sql = "SELECT idx, writer, title, content, reg_date, read_count "
-                + "FROM contents ORDER BY idx DESC";
+                + "FROM test1 ORDER BY idx DESC";
 
         try (Connection conn = getConnection();
                 PreparedStatement pstmt = conn.prepareStatement(sql);
@@ -61,9 +61,38 @@ public class GuestBookDAO {
         return list;
     }
 
+    // Select one post for the detail page.
+    public GuestBookDTO getDetail(int idx) {
+        String sql = "SELECT idx, writer, title, content, reg_date, read_count "
+                + "FROM test1 WHERE idx = ?";
+
+        try (Connection conn = getConnection();
+                PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setInt(1, idx);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    GuestBookDTO dto = new GuestBookDTO();
+                    dto.setIdx(rs.getInt("idx"));
+                    dto.setWriter(rs.getString("writer"));
+                    dto.setTitle(rs.getString("title"));
+                    dto.setContent(rs.getString("content"));
+                    dto.setRegDate(rs.getTimestamp("reg_date"));
+                    dto.setReadCount(rs.getInt("read_count"));
+                    return dto;
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Failed to select guestbook detail.", e);
+        }
+
+        return null;
+    }
+
     // Increase read count for a post.
     public int increaseReadCount(int idx) {
-        String sql = "UPDATE contents SET read_count = read_count + 1 WHERE idx = ?";
+        String sql = "UPDATE test1 SET read_count = read_count + 1 WHERE idx = ?";
 
         try (Connection conn = getConnection();
                 PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -77,7 +106,7 @@ public class GuestBookDAO {
 
     // Insert a post using the Oracle sequence for the primary key.
     public int insert(GuestBookDTO dto) {
-        String sql = "INSERT INTO contents (idx, writer, title, content) "
+        String sql = "INSERT INTO test1 (idx, writer, title, content) "
                 + "VALUES (contents_seq.NEXTVAL, ?, ?, ?)";
 
         try (Connection conn = getConnection();

@@ -4,142 +4,91 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>방명록 작성</title>
+<title>게시글 작성</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 <style>
-    * {
-        box-sizing: border-box;
+    :root {
+        --main-red: #DC3545;
+        --hover-red: #C92A2A;
+        --soft-red: #FFF5F5;
+        --text: #212529;
+        --muted: #6C757D;
+        --border: #E9ECEF;
+        --white: #FFFFFF;
     }
 
     body {
-        margin: 0;
-        background: #f4f6f8;
-        color: #222;
+        background: var(--soft-red);
+        color: var(--text);
         font-family: Arial, "Malgun Gothic", sans-serif;
     }
 
-    .wrap {
-        width: min(720px, calc(100% - 32px));
+    .write-wrap {
+        max-width: 760px;
         margin: 48px auto;
+        padding: 0 16px;
     }
 
-    .top {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 16px;
-        margin-bottom: 20px;
+    .write-header {
+        border-bottom: 2px solid var(--main-red);
+        padding-bottom: 18px;
+        margin-bottom: 24px;
     }
 
-    h1 {
-        margin: 0;
-        font-size: 28px;
-        font-weight: 700;
-    }
-
-    .back {
-        color: #1769aa;
-        font-size: 14px;
-        font-weight: 700;
-        text-decoration: none;
-    }
-
-    .form-box {
-        padding: 24px;
-        border: 1px solid #dde3ea;
+    .write-card {
+        border: 1px solid var(--border);
         border-radius: 8px;
-        background: #fff;
+        background: var(--white);
+        padding: 24px;
     }
 
-    .field {
-        margin-bottom: 18px;
+    .btn-danger {
+        --bs-btn-bg: var(--main-red);
+        --bs-btn-border-color: var(--main-red);
+        --bs-btn-hover-bg: var(--hover-red);
+        --bs-btn-hover-border-color: var(--hover-red);
     }
 
-    label {
-        display: block;
-        margin-bottom: 8px;
-        color: #344054;
-        font-size: 14px;
-        font-weight: 700;
-    }
-
-    input,
-    textarea {
-        width: 100%;
-        border: 1px solid #cbd5df;
-        border-radius: 6px;
-        padding: 11px 12px;
-        color: #222;
-        font: inherit;
-    }
-
-    textarea {
-        min-height: 180px;
-        resize: vertical;
-    }
-
-    input:focus,
-    textarea:focus {
-        border-color: #1769aa;
-        outline: 3px solid rgba(23, 105, 170, 0.14);
-    }
-
-    .actions {
-        display: flex;
-        justify-content: flex-end;
-        gap: 10px;
-    }
-
-    .btn {
-        min-height: 42px;
-        border: 0;
-        border-radius: 6px;
-        padding: 0 18px;
-        font-size: 14px;
-        font-weight: 700;
-        cursor: pointer;
-    }
-
-    .submit {
-        background: #1769aa;
-        color: #fff;
-    }
-
-    .reset {
-        background: #e8eef4;
-        color: #344054;
+    .form-control:focus {
+        border-color: var(--main-red);
+        box-shadow: 0 0 0 .25rem rgba(220, 53, 69, .14);
     }
 </style>
 </head>
 <body>
-<div class="wrap">
-    <div class="top">
-        <h1>방명록 작성</h1>
-        <a class="back" href="${pageContext.request.contextPath}/guestbook">목록으로</a>
+<main class="write-wrap">
+    <div class="write-header d-flex align-items-end justify-content-between gap-3">
+        <div>
+            <h1 class="h3 fw-bold mb-2">게시글 작성</h1>
+            <p class="text-secondary mb-0">커뮤니티에 공유할 내용을 작성해주세요.</p>
+        </div>
+        <a class="btn btn-outline-danger" href="${pageContext.request.contextPath}/guestbook">목록</a>
     </div>
 
-    <form class="form-box" action="${pageContext.request.contextPath}/guestbook" method="post">
+    <form class="write-card" action="${pageContext.request.contextPath}/guestbook" method="post">
         <input type="hidden" name="action" value="insert">
 
-        <div class="field">
-            <label for="writer">작성자</label>
-            <input type="text" id="writer" name="writer" maxlength="50" required>
+        <div class="mb-3">
+            <label class="form-label fw-bold" for="writer">작성자명</label>
+            <input class="form-control" type="text" id="writer" name="writer" maxlength="50" required>
         </div>
 
-        <div class="field">
-            <label for="title">제목</label>
-            <input type="text" id="title" name="title" maxlength="200" required>
+        <div class="mb-3">
+            <label class="form-label fw-bold" for="title">제목</label>
+            <input class="form-control" type="text" id="title" name="title" maxlength="200" required>
         </div>
 
-        <div class="field">
-            <label for="content">내용</label>
-            <textarea id="content" name="content" maxlength="4000" required></textarea>
-        </div><%--required: 입력을 안 하고 등록을 누르면 브라우저가 "이 필드를 입력하세요"라며 전송을 막아줍니다. --%>
+        <div class="mb-4">
+            <label class="form-label fw-bold" for="content">내용</label>
+            <textarea class="form-control" id="content" name="content" rows="10" maxlength="4000" required></textarea>
+        </div>
 
-        <div class="actions">
-            <button class="btn reset" type="reset">초기화</button>
-            <button class="btn submit" type="submit">등록</button>
+        <div class="d-flex justify-content-end gap-2">
+            <button class="btn btn-light border fw-bold" type="reset">초기화</button>
+            <button class="btn btn-danger fw-bold" type="submit">등록</button>
         </div>
     </form>
-</div>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
